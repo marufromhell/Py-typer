@@ -3,7 +3,7 @@ import os
 import sys, tty, termios
 import timeit
 
-
+# messy ass code
 def starttime():
     """Starts the timer if ENABLE_TIMER is True."""
     global start_time
@@ -28,12 +28,11 @@ class LowPrint:
             sys.stdout.flush()
         except IOError as e:
             print(f"IO Error: {e}", file=sys.stderr)
-
-
 lp = LowPrint()
 lp< 'EOF to exit... '
+import time
+time.sleep(3)
 class _GetchUnix:
-
     def __call__(self):
             fd = sys.stdin.fileno()
             old_settings = termios.tcgetattr(fd)
@@ -41,28 +40,24 @@ class _GetchUnix:
                 tty.setraw(sys.stdin.fileno())
                 ch = sys.stdin.read(1)
                 if ch == '\x04':#eof char
-                    lp<"Exit... "
+                    lp<"\nExit... \n"
+                    sys.exit(0)
             finally:
                 termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
             return ch
-        
-
 getch = _GetchUnix()
-
 def typer(sentence):
     os.system('clear')
     lp<sentence+'\n'
     typed = []
     incorrect = 0
     timer_started = False 
-
     for char in sentence:
         while True:
             a = getch()
             if not timer_started:
                 starttime()  # idk how much latency this adds idrk
                 timer_started = True
-
             if a == char:
                 # success case
                 typed.append(char)
@@ -78,7 +73,6 @@ def typer(sentence):
                 lp < colorama.Fore.RED + a + colorama.Style.RESET_ALL
                 lp < ''.join(sentence[len(typed):])
 
-    # End of typing session
     endtime()
     total_chars = len(sentence)
     correct_chars = len(typed) - incorrect
@@ -86,8 +80,6 @@ def typer(sentence):
     wpt = correct_chars / 5 # 5 char estimate
     wpm = round(wpt / (elapsed_time / 60), 2)
     return f"acc: {acc}%  wpm: {wpm}"
-
-os.system('clear')
 levels = [
     'The quick brown fox jumps over the lazy dog.',
     'The five boxing wizards jump quickly.',
@@ -97,11 +89,9 @@ levels = [
     'Watch \"Jeopardy!\", Alex Trebek\'s fun TV quiz game.'
 ]
 results=[]
-os.system('clear')
-lp<'\n'
+os.system('clear');lp<'\n'
 for level in levels:
     results.append(typer(level))
 os.system('clear')
-lp<'\n'
 for result in results:
     lp<result+'\n'
